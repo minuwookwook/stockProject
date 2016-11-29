@@ -2,22 +2,53 @@ import pandas_datareader.data as web
 import datetime
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import datacrawling
 
 class AX:
-    def __init__(self):
-        self.now = datetime.datetime.now()
-        self.start = self.now - datetime.timedelta(days=30)
-        self.data = web.DataReader("005930.KS", "yahoo", self.start, self.now)
+    def __init__(self,code):
         self.day_list = []
         self.name_list = []
         self.price_list = []
         self.price = []
         self.day = []
+    def purchase(self):
+        self.start = input("구입할 날짜를 입력하시오. (xxxx-xx-xx) : ")
+        self.year = int(self.start.split('-')[0])
+        self.month = int(self.start.split('-')[1])
+        self.day = int(self.start.split('-')[2])
+        self.start = datetime.datetime(self.year, self.month, self.day)
+        self.end = self.start - datetime.timedelta(days=30)
+        self.data = web.DataReader(code, "yahoo", self.end, self.start)
+        self.connect()
+        self.day_list = []
+        self.name_list = []
+        self.price_list = []
+        self.sell()
+
+    def sell(self):
+        self.end = self.start
+        self.start = input("판매할 날짜를 입력하시오. (xxxx-xx-xx) : ")
+        self.year = int(self.start.split('-')[0])
+        self.month = int(self.start.split('-')[1])
+        self.day = int(self.start.split('-')[2])
+        self.start = datetime.datetime(self.year, self.month, self.day)
+        self.data = web.DataReader(code, "yahoo", self.end, self.start)
+
+        self.predictPrice = input("예측되는 가격 : ")
+        self.connect()
+        print("결과 : ",self.difference(),"만큼 차이가 납니다")
+
+    def difference(self):
+        diff = int(self.price_list[len(self.price_list)-1]) - int(self.predictPrice)
+
+        if(diff < 0):
+            return diff * -1
+        else:
+            return diff
 
     def makeGraph(self):
         fig = plt.figure(figsize=(12, 8))
         ax = fig.add_subplot(111)
-
         count = 0
         for i, day in enumerate(self.data.index):
             self.price_list.append(self.data['Close'][count])
@@ -52,6 +83,11 @@ class AX:
         plt.show()
 
 
-a = AX()
-a.connect()
+stockName = input("종목 이름 : ")
+data = datacrawling.Data(stockName)
+code = data.findStock()
+code = code.split("code=")[1]
+code = code + '.KS'
+a = AX(code)
+a.purchase()
 
