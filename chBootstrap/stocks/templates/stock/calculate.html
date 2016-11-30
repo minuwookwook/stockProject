@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = "utf-8">
+        <title> Stock </title>
+    </head>
+    <body>
+        <form action = "{% url 'stock:calculate' %}" method = "post">
+          {% csrf_token %}
+          <p>
+              {{ form.as_p }}
+
+          </p>
+          <p>
+              {% if stockResult %}
+                  <ul>
+                      {% for key, value in stockResult.items %}
+                          <li> {{ key }} : {{ value }} </li>
+
+                      {% endfor %}
+                      {% for key, value in newsResult.items %}
+                          <li> {{ key }} : {{ value }} </li>
+                      {% endfor %}
+                  </ul>
+              {% endif %}
+          </p>
+          <p>
+              <button type = "submit" name = "submit"> 검색 </button>
+          </p>
+          <form action = "{% url 'stock:calculate' %}" method = "post">
+              <p>
+                  <button type = "bye" name = "bye"> 구매 </button>
+              </p>
+          </form>
+      </form>
+  </body>
+</html>

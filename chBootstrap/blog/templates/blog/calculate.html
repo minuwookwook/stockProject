@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset = "utf-8">
+    <title> Simple Calculator Using Django </title>
+  </head>
+  <body>
+    <form action = "{% url 'blog:calculate' %}" method = "post">
+      {% csrf_token %}
+
+      <p>
+        {{ temp }}
+        안녕
+        {{ temp }}
+      </p>
+      <p>
+          {% if result %}
+            더하기 결과: {{ result }}
+          {% endif %}
+      </p>
+      <p>
+        <button type = "submit" name = "submit"> 계산하기 </button>
+      </p>
+    </form>
+  </body>
+</html>
